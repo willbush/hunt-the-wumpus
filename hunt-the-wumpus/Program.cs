@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace hunt_the_wumpus
-{
-    class Program
-    {
+namespace hunt_the_wumpus {
+    internal class Program {
         private const string HUNT_ASCII = @"
  ██░ ██  █    ██  ███▄    █ ▄▄▄█████▓                  
 ▓██░ ██▒ ██  ▓██▒ ██ ▀█   █ ▓  ██▒ ▓▒                  
@@ -43,15 +37,23 @@ namespace hunt_the_wumpus
     ░      ░            ░               ░           ░  
 ";
 
-        static void Main()
-        {
+        private static void Main() {
+            DisplayLogo();
+            try {
+                var game = new Game();
+                game.Run();
+            } catch (Exception e) {
+                Console.WriteLine(e);
+            }
+        }
+
+        private static void DisplayLogo() {
             Thread.Sleep(500);
             Console.WriteLine(HUNT_ASCII);
             Thread.Sleep(500);
             Console.WriteLine(THE_ASCII);
             Thread.Sleep(500);
             Console.WriteLine(WUMPUS_ASCII);
-            Console.ReadLine();
         }
     }
 }
