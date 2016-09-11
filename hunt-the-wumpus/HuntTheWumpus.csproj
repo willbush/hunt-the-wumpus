@@ -7,8 +7,8 @@
     <ProjectGuid>{8CE86F35-C27C-4123-B28A-8016AD4CEB90}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>hunt_the_wumpus</RootNamespace>
-    <AssemblyName>hunt-the-wumpus</AssemblyName>
+    <RootNamespace>HuntTheWumpus</RootNamespace>
+    <AssemblyName>HuntTheWumpus</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

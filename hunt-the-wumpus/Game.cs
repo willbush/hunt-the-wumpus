@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace hunt_the_wumpus {
+namespace HuntTheWumpus {
     internal class Game {
         private readonly DodecahedronMap _map;
         private readonly Player _player;
 
         internal Game() {
-            int startRoom = new Random().Next(1, 21); // random number in range [1, 20]
-            _player = new Player { RoomNumber = startRoom };
             _map = new DodecahedronMap();
+            _player = new Player { RoomNumber = _map.GetRandomAvailableRoom() };
         }
 
         public void Run() {
@@ -55,7 +56,7 @@ namespace hunt_the_wumpus {
         }
     }
 
-    internal class DodecahedronMap {
+    public class DodecahedronMap {
         // Index + 1 is the room number. Each row are adjacent room numbers for the colomn room number;
         private static readonly int[,] Rooms = {
             { 2, 5, 8 },
@@ -79,6 +80,8 @@ namespace hunt_the_wumpus {
             { 11, 18, 20 },
             { 13, 16, 19 }
         };
+        private readonly HashSet<int> _occupiedRooms = new HashSet<int>();
+        private readonly Random _random = new Random();
 
         public void PrintAdjacentRoomNumbers(int roomNum) {
             int i = roomNum - 1;
@@ -92,6 +95,17 @@ namespace hunt_the_wumpus {
                     return true;
 
             return false;
+        }
+
+        public int GetRandomAvailableRoom() {
+            int[] availableRooms = Enumerable.Range(1, 20).Where(r => !_occupiedRooms.Contains(r)).ToArray();
+            if (availableRooms.Length == 0)
+                throw new InvalidOperationException("All rooms are already occupied.");
+
+            int index = _random.Next(0, availableRooms.Length);
+            int unoccupiedRoom = availableRooms[index];
+            _occupiedRooms.Add(unoccupiedRoom);
+            return unoccupiedRoom;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 
-namespace hunt_the_wumpus {
+namespace HuntTheWumpus {
     internal class Program {
-        private const string HUNT_ASCII = @"
+        private const string HuntAscii = @"
  ██░ ██  █    ██  ███▄    █ ▄▄▄█████▓                  
 ▓██░ ██▒ ██  ▓██▒ ██ ▀█   █ ▓  ██▒ ▓▒                  
 ▒██▀▀██░▓██  ▒██░▓██  ▀█ ██▒▒ ▓██░ ▒░                  
@@ -14,7 +14,7 @@ namespace hunt_the_wumpus {
  ░  ░░ ░ ░░░ ░ ░    ░   ░ ░   ░                        
  ░  ░  ░   ░              ░                            
 ";
-        private const string THE_ASCII = @"
+        private const string TheAscii = @"
 ▄▄▄█████▓ ██░ ██ ▓█████                                
 ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀                                
 ▒ ▓██░ ▒░▒██▀▀██░▒███                                  
@@ -25,7 +25,7 @@ namespace hunt_the_wumpus {
   ░       ░  ░░ ░   ░                                  
           ░  ░  ░   ░  ░                               
 ";
-        private const string WUMPUS_ASCII = @"
+        private const string WumpusAscii = @"
  █     █░█    ██  ███▄ ▄███▓ ██▓███   █    ██   ██████ 
 ▓█░ █ ░█░██  ▓██▒▓██▒▀█▀ ██▒▓██░  ██▒ ██  ▓██▒▒██    ▒ 
 ▒█░ █ ░█▓██  ▒██░▓██    ▓██░▓██░ ██▓▒▓██  ▒██░░ ▓██▄   
@@ -49,11 +49,11 @@ namespace hunt_the_wumpus {
 
         private static void DisplayLogo() {
             Thread.Sleep(500);
-            Console.WriteLine(HUNT_ASCII);
+            Console.WriteLine(HuntAscii);
             Thread.Sleep(500);
-            Console.WriteLine(THE_ASCII);
+            Console.WriteLine(TheAscii);
             Thread.Sleep(500);
-            Console.WriteLine(WUMPUS_ASCII);
+            Console.WriteLine(WumpusAscii);
         }
     }
 }
