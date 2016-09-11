@@ -1,28 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace HuntTheWumpus {
     internal class Game {
-        private readonly DodecahedronMap _map;
         private readonly Player _player;
+        private readonly SuperBats _superBats;
+        private readonly Wumpus _wumpus;
+        private readonly BottomlessPit _bottomlessPit;
 
         internal Game() {
-            _map = new DodecahedronMap();
-            _player = new Player { RoomNumber = _map.GetRandomAvailableRoom() };
+            var occupiedRooms = new HashSet<int>();
+            _player = new Player { RoomNumber = Map.GetRandomAvailableRoom(occupiedRooms) };
+            _wumpus = new Wumpus { RoomNumber = Map.GetRandomAvailableRoom(occupiedRooms) };
+            _superBats = new SuperBats { RoomNumber = Map.GetRandomAvailableRoom(occupiedRooms) };
+            _bottomlessPit = new BottomlessPit { RoomNumber = Map.GetRandomAvailableRoom(occupiedRooms) };
+            Console.WriteLine($"Superbats are in room number {_superBats.RoomNumber}");
+            Console.WriteLine($"Wumpus is in room number {_wumpus.RoomNumber}");
+            Console.WriteLine($"Bottomless pit is in room number {_bottomlessPit.RoomNumber}");
         }
 
         public void Run() {
             const string actionPrompt = "Shoot, Move or Quit(S - M - Q)? ";
-            string respose;
+            string command;
             do {
+                PrintAnyAdjacentHazards();
                 Console.WriteLine($"You are in room {_player.RoomNumber}");
-                _map.PrintAdjacentRoomNumbers(_player.RoomNumber);
+                Map.PrintAdjacentRoomNumbers(_player.RoomNumber);
 
                 Console.Write(actionPrompt);
-                respose = Console.ReadLine();
-                PerformCommand(respose);
-            } while (!IsQuitCommand(respose));
+                command = Console.ReadLine();
+                PerformCommand(command);
+            } while (!IsQuitCommand(command));
+        }
+
+        private void PrintAnyAdjacentHazards() {
+            HashSet<int> adjacentRooms = Map.Rooms[_player.RoomNumber];
+            if (adjacentRooms.Contains(_wumpus.RoomNumber))
+                Console.WriteLine("I smell a Wumpus.");
+            if (adjacentRooms.Contains(_superBats.RoomNumber))
+                Console.WriteLine("Bats nearby.");
+            if (adjacentRooms.Contains(_bottomlessPit.RoomNumber))
+                Console.WriteLine("I feel a draft.");
         }
 
         private void PerformCommand(string cmd) {
@@ -40,15 +60,17 @@ namespace HuntTheWumpus {
         }
     }
 
-    internal class Player {
+    internal class GameEntity {
         public int RoomNumber { get; set; }
+    }
 
+    internal class Player : GameEntity {
         public void Move() {
             Console.Write("Where to? ");
             string response = Console.ReadLine();
 
             int adjacentRoom;
-            while (!int.TryParse(response, out adjacentRoom) || !DodecahedronMap.IsAdjacent(RoomNumber, adjacentRoom)) {
+            while (!int.TryParse(response, out adjacentRoom) || !Map.IsAdjacent(RoomNumber, adjacentRoom)) {
                 Console.Write("Not Possible - Where to? ");
                 response = Console.ReadLine();
             }
@@ -56,55 +78,60 @@ namespace HuntTheWumpus {
         }
     }
 
-    public class DodecahedronMap {
-        // Index + 1 is the room number. Each row are adjacent room numbers for the colomn room number;
-        private static readonly int[,] Rooms = {
-            { 2, 5, 8 },
-            { 1, 3, 10 },
-            { 2, 4, 12 },
-            { 3, 5, 14 },
-            { 1, 4, 6 },
-            { 5, 7, 15 },
-            { 6, 8, 17 },
-            { 1, 7, 9 },
-            { 8, 10, 18 },
-            { 2, 9, 11 },
-            { 10, 12, 19 },
-            { 3, 11, 13 },
-            { 12, 14, 20 },
-            { 4, 13, 15 },
-            { 6, 14, 16 },
-            { 15, 17, 20 },
-            { 7, 16, 18 },
-            { 9, 17, 19 },
-            { 11, 18, 20 },
-            { 13, 16, 19 }
-        };
-        private readonly HashSet<int> _occupiedRooms = new HashSet<int>();
-        private readonly Random _random = new Random();
+    internal class Wumpus : GameEntity {}
 
-        public void PrintAdjacentRoomNumbers(int roomNum) {
-            int i = roomNum - 1;
-            Console.WriteLine($"Tunnels lead to {Rooms[i, 0]} {Rooms[i, 1]} {Rooms[i, 2]}");
+    internal class SuperBats : GameEntity {}
+
+    internal class BottomlessPit : GameEntity {}
+
+    public static class Map {
+        private static readonly Random Random = new Random();
+        // Each key is the room number and its value is the set of adjacent rooms.
+
+        internal static Dictionary<int, HashSet<int>> Rooms { get; } = new Dictionary<int, HashSet<int>> {
+            { 1, new HashSet<int> { 2, 5, 8 } },
+            { 2, new HashSet<int> { 1, 3, 10 } },
+            { 3, new HashSet<int> { 2, 4, 12 } },
+            { 4, new HashSet<int> { 3, 5, 14 } },
+            { 5, new HashSet<int> { 1, 4, 6 } },
+            { 6, new HashSet<int> { 5, 7, 15 } },
+            { 7, new HashSet<int> { 6, 8, 17 } },
+            { 8, new HashSet<int> { 1, 7, 9 } },
+            { 9, new HashSet<int> { 8, 10, 18 } },
+            { 10, new HashSet<int> { 2, 9, 11 } },
+            { 11, new HashSet<int> { 10, 12, 19 } },
+            { 12, new HashSet<int> { 3, 11, 13 } },
+            { 13, new HashSet<int> { 12, 14, 20 } },
+            { 14, new HashSet<int> { 4, 13, 15 } },
+            { 15, new HashSet<int> { 6, 14, 16 } },
+            { 16, new HashSet<int> { 15, 17, 20 } },
+            { 17, new HashSet<int> { 7, 16, 18 } },
+            { 18, new HashSet<int> { 9, 17, 19 } },
+            { 19, new HashSet<int> { 11, 18, 20 } },
+            { 20, new HashSet<int> { 13, 16, 19 } }
+        };
+
+        public static void PrintAdjacentRoomNumbers(int roomNum) {
+            var sb = new StringBuilder();
+            foreach (int room in Rooms[roomNum])
+                sb.Append(room + " ");
+
+            Console.WriteLine($"Tunnels lead to {sb}");
         }
 
         public static bool IsAdjacent(int currentRoom, int adjacentRoom) {
-            int i = currentRoom - 1;
-            for (int j = 0; j < Rooms.GetLength(1); ++j)
-                if (Rooms[i, j] == adjacentRoom)
-                    return true;
-
-            return false;
+            return Rooms[currentRoom].Contains(adjacentRoom);
         }
 
-        public int GetRandomAvailableRoom() {
-            int[] availableRooms = Enumerable.Range(1, 20).Where(r => !_occupiedRooms.Contains(r)).ToArray();
+        public static int GetRandomAvailableRoom(HashSet<int> occupiedRooms) {
+            const int numOfRooms = 20;
+            int[] availableRooms = Enumerable.Range(1, numOfRooms).Where(r => !occupiedRooms.Contains(r)).ToArray();
             if (availableRooms.Length == 0)
                 throw new InvalidOperationException("All rooms are already occupied.");
 
-            int index = _random.Next(0, availableRooms.Length);
+            int index = Random.Next(0, availableRooms.Length);
             int unoccupiedRoom = availableRooms[index];
-            _occupiedRooms.Add(unoccupiedRoom);
+            occupiedRooms.Add(unoccupiedRoom);
             return unoccupiedRoom;
         }
     }

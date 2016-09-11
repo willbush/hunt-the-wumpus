@@ -9,26 +9,24 @@ namespace HuntTheWumpus.Tests {
         [TestMethod]
         public void GetRandomAvailableRoom_canReturnAll() {
             const int numOfRooms = 20;
-            var map = new DodecahedronMap();
             var availableRooms = new HashSet<int>(Enumerable.Range(1, numOfRooms));
-            var assignedRooms = new HashSet<int>();
+            var occupiedRooms = new HashSet<int>();
             for (int i = 0; i < numOfRooms; ++i) {
-                int roomNum = map.GetRandomAvailableRoom();
+                int roomNum = Map.GetRandomAvailableRoom(occupiedRooms);
                 Assert.IsTrue(availableRooms.Remove(roomNum));
-                Assert.IsTrue(assignedRooms.Add(roomNum));
             }
             Assert.AreEqual(0, availableRooms.Count);
-            Assert.AreEqual(numOfRooms, assignedRooms.Count);
+            Assert.AreEqual(numOfRooms, occupiedRooms.Count);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetRandomAvailableRoom_throwsIfTooManyAssignmentsAttempted() {
             const int numOfRooms = 20;
-            var map = new DodecahedronMap();
+            var occupiedRooms = new HashSet<int>();
 
             for (int i = 0; i < numOfRooms + 1; ++i)
-                map.GetRandomAvailableRoom();
+                Map.GetRandomAvailableRoom(occupiedRooms);
         }
     }
 }
