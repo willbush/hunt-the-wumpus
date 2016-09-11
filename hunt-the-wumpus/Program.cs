@@ -38,10 +38,12 @@ namespace HuntTheWumpus {
 ";
 
         private static void Main() {
+            Console.SetWindowSize(80, 50);
             DisplayLogo();
             try {
                 var game = new Game();
                 game.Run();
+                Console.ReadLine();
             } catch (Exception e) {
                 Console.WriteLine(e);
             }

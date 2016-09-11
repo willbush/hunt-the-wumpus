@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HuntTheWumpus.Tests {
     [TestClass]
-    public class DodecahedronMapTests {
+    public class MapTests {
         [TestMethod]
         public void GetRandomAvailableRoom_canReturnAll() {
             const int numOfRooms = 20;
