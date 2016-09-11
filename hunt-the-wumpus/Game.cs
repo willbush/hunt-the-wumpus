@@ -40,6 +40,7 @@ namespace HuntTheWumpus {
             string command;
             do {
                 UpdateWumpus();
+                CheckIfPlayerMovedIntoRoomWithSuperbats();
                 PrintAnyAdjacentHazards();
                 Console.WriteLine($"You are in room {_player.RoomNumber}");
                 Map.PrintAdjacentRoomNumbers(_player.RoomNumber);
@@ -49,6 +50,13 @@ namespace HuntTheWumpus {
                 PerformCommand(command);
                 Console.WriteLine();
             } while (!IsQuitCommand(command) && !IsGameOver());
+        }
+
+        private void CheckIfPlayerMovedIntoRoomWithSuperbats() {
+            if (_player.RoomNumber == _superBats.RoomNumber) {
+                Console.WriteLine("Zap--Super Bat snatch! Elsewhereville for you!");
+                _player.RoomNumber = Map.GetAnyRandomRoomNumber();
+            }
         }
 
         private void UpdateWumpus() {
@@ -144,8 +152,8 @@ namespace HuntTheWumpus {
 
     public static class Map {
         private static readonly Random Random = new Random();
-        // Each key is the room number and its value is the set of adjacent rooms.
 
+        // Each key is the room number and its value is the set of adjacent rooms.
         internal static Dictionary<int, HashSet<int>> Rooms { get; } = new Dictionary<int, HashSet<int>> {
             { 1, new HashSet<int> { 2, 5, 8 } },
             { 2, new HashSet<int> { 1, 3, 10 } },
@@ -191,6 +199,10 @@ namespace HuntTheWumpus {
             int unoccupiedRoom = availableRooms[index];
             occupiedRooms.Add(unoccupiedRoom);
             return unoccupiedRoom;
+        }
+
+        public static int GetAnyRandomRoomNumber() {
+            return Random.Next(1, 21); // random number in range [1, 20]
         }
     }
 }
