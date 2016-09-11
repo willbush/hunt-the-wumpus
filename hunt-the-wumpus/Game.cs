@@ -103,6 +103,7 @@ namespace HuntTheWumpus {
                     _player.Move();
                     break;
                 case "S":
+                    _player.ShootArrow();
                     break;
             }
         }
@@ -117,6 +118,8 @@ namespace HuntTheWumpus {
     }
 
     internal class Player : GameEntity {
+        private int _crookedArrowCount = 5;
+
         public void Move() {
             Console.Write("Where to? ");
             string response = Console.ReadLine();
@@ -127,6 +130,55 @@ namespace HuntTheWumpus {
                 response = Console.ReadLine();
             }
             RoomNumber = adjacentRoom;
+        }
+
+        public void ShootArrow() {
+            int numOfRooms = GetNumRoomsToTraverse();
+            if (numOfRooms == 0) {
+                Console.WriteLine("OK, suit yourself...");
+            } else {
+                List<int> roomsToTraverse = GetRoomsToTraverse(numOfRooms);
+                Console.WriteLine("rooms given:");
+                roomsToTraverse.ForEach(Console.WriteLine);
+                _crookedArrowCount = _crookedArrowCount - 1;
+            }
+        }
+
+        private int GetNumRoomsToTraverse() {
+            int numOfRooms;
+            string response;
+            do {
+                Console.Write("No. or rooms (0-5)? ");
+                response = Console.ReadLine();
+            } while (!int.TryParse(response, out numOfRooms) || numOfRooms < 0 || numOfRooms > 5);
+
+            return numOfRooms;
+        }
+
+        private List<int> GetRoomsToTraverse(int numOfRooms) {
+            var rooms = new List<int>();
+            int count = 1;
+
+            while (count <= numOfRooms) {
+                Console.Write("Room #?");
+                int roomNumber;
+                if (!int.TryParse(Console.ReadLine(), out roomNumber)) {
+                    Console.WriteLine("Bad number - try again:");
+                    continue;
+                }
+                if (IsTooCrooked(roomNumber, rooms)) {
+                    Console.WriteLine("Arrows aren't that crooked - try another room!");
+                } else {
+                    rooms.Add(roomNumber);
+                    count = count + 1;
+                }
+            }
+            return rooms;
+        }
+
+        private static bool IsTooCrooked(int roomNumber, IReadOnlyList<int> rooms) {
+            return (rooms.Count > 0 && rooms.Last() == roomNumber) ||
+                   (rooms.Count > 1 && rooms[rooms.Count - 2] == roomNumber);
         }
     }
 
