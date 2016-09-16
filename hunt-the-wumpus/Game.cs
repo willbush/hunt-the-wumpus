@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace HuntTheWumpus {
     public class Game {
+        private const string LoseMessage = "Ha ha ha - you lose!";
+        private const string WinMessage = "Aha! You got the Wumpus!\n" +
+                                          "Hee hee hee - the Wumpus'll getcha next time!!";
         private readonly BottomlessPit _bottomlessPit1;
         private readonly BottomlessPit _bottomlessPit2;
         private readonly Player _player;
@@ -46,7 +50,25 @@ namespace HuntTheWumpus {
         }
 
         public void Run() {
+            const string playAgain = "Play again? (Y-N)";
+            const string sameSetup = "Same Setup? (Y-N)";
+            var acceptableResponses = new HashSet<string> { "Y", "N" };
+            string playResponse;
+            string setupResponse;
+            do {
+                Play();
+                playResponse = GetValidResponse(playAgain, acceptableResponses);
+                if (playResponse == "Y") {
+                    setupResponse = GetValidResponse(sameSetup, acceptableResponses);
+                    //TODO: reset game state.
+                }
+            } while (playResponse == "Y");
+        }
+
+        private void Play() {
             const string actionPrompt = "Shoot, Move or Quit(S - M - Q)? ";
+            EndState endState;
+
             do {
                 Console.WriteLine();
                 UpdateWumpus();
@@ -55,15 +77,31 @@ namespace HuntTheWumpus {
                 Console.WriteLine($"You are in room {_player.RoomNumber}");
                 Map.PrintAdjacentRoomNumbers(_player.RoomNumber);
 
-                Console.Write(actionPrompt);
-            } while (!IsGameOver(Console.ReadLine()));
+                string command = GetValidResponse(actionPrompt, new HashSet<string> { "S", "M", "Q" });
+                endState = GetEndState(command);
+            } while (!endState.IsGameOver);
+
+            endState.Print();
         }
 
-        private void CheckIfPlayerMovedIntoRoomWithSuperbats() {
-            if (_player.RoomNumber == _superBats1.RoomNumber || _player.RoomNumber == _superBats2.RoomNumber) {
-                Console.WriteLine("Zap--Super Bat snatch! Elsewhereville for you!");
-                _player.RoomNumber = Map.GetAnyRandomRoomNumber();
-            }
+        /// <summary>
+        ///     Gets an acceptable response to a question.
+        /// </summary>
+        /// <param name="question">The question to ask</param>
+        /// <param name="acceptableResponses">acceptable responses to the question (all assumed to be uppercase)</param>
+        /// <returns>an acceptable response</returns>
+        private static string GetValidResponse(string question, ICollection<string> acceptableResponses) {
+            string response;
+            do {
+                Console.Write(question);
+                response = Console.ReadLine()?.Trim().ToUpper();
+            } while (!acceptableResponses.Contains(response));
+
+            return response;
+        }
+
+        public static T Convert<T>(string input) {
+            return (T) TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(input);
         }
 
         private void UpdateWumpus() {
@@ -78,43 +116,50 @@ namespace HuntTheWumpus {
                 _wumpus.Move(_roomsWithStaticHazards);
         }
 
-        private bool IsGameOver(string command) {
-            bool isGameOver;
+        private void CheckIfPlayerMovedIntoRoomWithSuperbats() {
+            if (_player.RoomNumber == _superBats1.RoomNumber || _player.RoomNumber == _superBats2.RoomNumber) {
+                Console.WriteLine("Zap--Super Bat snatch! Elsewhereville for you!");
+                _player.RoomNumber = Map.GetAnyRandomRoomNumber();
+            }
+        }
 
-            switch (command.Trim().ToUpper()) {
-                case "Q":
-                    isGameOver = true;
+        private EndState GetEndState(string command) {
+            EndState endState;
+            switch (command) {
+                case "S":
+                    endState = GetEndState(_player.ShootArrow(), _player.RoomNumber, _wumpus.RoomNumber);
                     break;
                 case "M":
                     _player.Move();
-                    isGameOver = IsGameOver();
+                    endState = GetEndState();
                     break;
-                case "S":
-                    isGameOver = IsGameOver(_player.ShootArrow(), _player.RoomNumber, _wumpus.RoomNumber);
+                case "Q":
+                    endState = new EndState(true, "");
                     break;
                 default:
-                    isGameOver = false;
+                    endState = new EndState(false, "");
                     break;
             }
-            return isGameOver;
+            return endState;
         }
 
-        private bool IsGameOver() {
-            bool isGameOver = false;
-            if (_player.RoomNumber == _bottomlessPit1.RoomNumber || _player.RoomNumber == _bottomlessPit2.RoomNumber) {
-                Console.WriteLine("YYYIIIIEEEE... fell in a pit!");
-                isGameOver = true;
-            } else if (_wumpus.IsAwake && _player.RoomNumber == _wumpus.RoomNumber) {
-                Console.WriteLine("Tsk tsk tsk - wumpus got you!");
-                isGameOver = true;
-            }
-            if (isGameOver)
-                Console.WriteLine("Ha ha ha - you lose!");
+        private EndState GetEndState() {
+            EndState endState;
 
-            return isGameOver;
+            if (_player.RoomNumber == _bottomlessPit1.RoomNumber || _player.RoomNumber == _bottomlessPit2.RoomNumber)
+                endState = new EndState(true, $"YYYIIIIEEEE... fell in a pit!\n{LoseMessage}");
+            else if (_wumpus.IsAwake && _player.RoomNumber == _wumpus.RoomNumber)
+                endState = new EndState(true, $"Tsk tsk tsk - wumpus got you!\n{LoseMessage}");
+            else
+                endState = new EndState(false, "");
+
+            return endState;
         }
 
-        public static bool IsGameOver(List<int> roomsToTraverse, int playerRoomNum, int wumpusRoomNum) {
+        private EndState GetEndState(List<int> roomsToTraverse, int playerRoomNum, int wumpusRoomNum) {
+            if (roomsToTraverse == null)
+                return new EndState(false, "");
+
             int roomsTraversed = 0;
             var traversedRooms = new List<int> { playerRoomNum };
             int currentRoom = playerRoomNum;
@@ -128,12 +173,10 @@ namespace HuntTheWumpus {
                     Console.WriteLine(currentRoom);
                     roomsTraversed++;
                     if (playerRoomNum == currentRoom) {
-                        Console.WriteLine("Ouch! Arrow got you!");
-                        return true;
+                        return new EndState(true, $"Ouch! Arrow got you!\n{LoseMessage}");
                     }
                     if (wumpusRoomNum == currentRoom) {
-                        Console.WriteLine("Aha! You got the Wumpus!");
-                        return true;
+                        return new EndState(true, WinMessage);
                     }
                 } else {
                     break;
@@ -148,15 +191,17 @@ namespace HuntTheWumpus {
                 Console.WriteLine(currentRoom);
                 roomsTraversed++;
                 if (playerRoomNum == currentRoom) {
-                    Console.WriteLine("Ouch! Arrow got you!");
-                    return true;
+                    return new EndState(true, $"Ouch! Arrow got you!\n{LoseMessage}");
                 }
                 if (wumpusRoomNum == currentRoom) {
-                    Console.WriteLine("Aha! You got the Wumpus!");
-                    return true;
+                    return new EndState(true, WinMessage);
                 }
             }
-            return false;
+            Console.WriteLine("Missed!");
+            if (_player.CrookedArrowCount == 0) {
+                return new EndState(true, $"You've run out of arrows!\n{LoseMessage}");
+            }
+            return new EndState(false, "");
         }
 
         private void PrintAnyAdjacentHazards() {
@@ -172,6 +217,24 @@ namespace HuntTheWumpus {
                 Console.WriteLine("I feel a draft!");
             if (adjacentRooms.Contains(_bottomlessPit2.RoomNumber))
                 Console.WriteLine("I feel a draft!");
+        }
+    }
+
+    internal class EndState {
+        public bool IsGameOver { get; }
+        public string GameOverMessage { get; }
+
+        internal EndState(bool isGameOver, string gameOverMessage) {
+            IsGameOver = isGameOver;
+            GameOverMessage = gameOverMessage;
+        }
+
+        public void Print() {
+            Console.WriteLine();
+            if (string.IsNullOrEmpty(GameOverMessage)) return;
+
+            Console.WriteLine(GameOverMessage);
+            Console.WriteLine();
         }
     }
 
@@ -224,7 +287,7 @@ namespace HuntTheWumpus {
             while (count <= numOfRooms) {
                 Console.Write("Room #?");
                 int roomNumber;
-                if (!int.TryParse(Console.ReadLine(), out roomNumber) || roomNumber < 0 || roomNumber > 20) {
+                if (!int.TryParse(Console.ReadLine(), out roomNumber) || roomNumber < 0 || roomNumber > Map.NumOfRooms) {
                     Console.WriteLine("Bad number - try again:");
                     continue;
                 }
@@ -265,6 +328,7 @@ namespace HuntTheWumpus {
     internal class BottomlessPit : GameEntity {}
 
     public static class Map {
+        public const int NumOfRooms = 20;
         private static readonly Random Random = new Random();
 
         // Each key is the room number and its value is the set of adjacent rooms.
@@ -304,8 +368,7 @@ namespace HuntTheWumpus {
         }
 
         public static int GetRandomAvailableRoom(HashSet<int> occupiedRooms) {
-            const int numOfRooms = 20;
-            int[] availableRooms = Enumerable.Range(1, numOfRooms).Where(r => !occupiedRooms.Contains(r)).ToArray();
+            int[] availableRooms = Enumerable.Range(1, NumOfRooms).Where(r => !occupiedRooms.Contains(r)).ToArray();
             if (availableRooms.Length == 0)
                 throw new InvalidOperationException("All rooms are already occupied.");
 
@@ -316,7 +379,7 @@ namespace HuntTheWumpus {
         }
 
         public static int GetAnyRandomRoomNumber() {
-            return Random.Next(1, 21); // random number in range [1, 20]
+            return Random.Next(1, NumOfRooms + 1); // random number in range [1, 20]
         }
     }
 }

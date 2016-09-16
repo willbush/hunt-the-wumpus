@@ -43,7 +43,6 @@ namespace HuntTheWumpus {
             try {
                 var game = new Game();
                 game.Run();
-                Console.ReadLine();
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());
                 Console.Write("Press Enter to close.");
