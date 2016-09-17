@@ -3,43 +3,10 @@ using System.Threading;
 
 namespace HuntTheWumpus {
     internal class Program {
-        private const string HuntAscii = @"
- ██░ ██  █    ██  ███▄    █ ▄▄▄█████▓                  
-▓██░ ██▒ ██  ▓██▒ ██ ▀█   █ ▓  ██▒ ▓▒                  
-▒██▀▀██░▓██  ▒██░▓██  ▀█ ██▒▒ ▓██░ ▒░                  
-░▓█ ░██ ▓▓█  ░██░▓██▒  ▐▌██▒░ ▓██▓ ░                   
-░▓█▒░██▓▒▒█████▓ ▒██░   ▓██░  ▒██▒ ░                   
- ▒ ░░▒░▒░▒▓▒ ▒ ▒ ░ ▒░   ▒ ▒   ▒ ░░                     
- ▒ ░▒░ ░░░▒░ ░ ░ ░ ░░   ░ ▒░    ░                      
- ░  ░░ ░ ░░░ ░ ░    ░   ░ ░   ░                        
- ░  ░  ░   ░              ░                            
-";
-        private const string TheAscii = @"
-▄▄▄█████▓ ██░ ██ ▓█████                                
-▓  ██▒ ▓▒▓██░ ██▒▓█   ▀                                
-▒ ▓██░ ▒░▒██▀▀██░▒███                                  
-░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄                                
-  ▒██▒ ░ ░▓█▒░██▓░▒████▒                               
-  ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░                               
-    ░     ▒ ░▒░ ░ ░ ░  ░                               
-  ░       ░  ░░ ░   ░                                  
-          ░  ░  ░   ░  ░                               
-";
-        private const string WumpusAscii = @"
- █     █░█    ██  ███▄ ▄███▓ ██▓███   █    ██   ██████ 
-▓█░ █ ░█░██  ▓██▒▓██▒▀█▀ ██▒▓██░  ██▒ ██  ▓██▒▒██    ▒ 
-▒█░ █ ░█▓██  ▒██░▓██    ▓██░▓██░ ██▓▒▓██  ▒██░░ ▓██▄   
-░█░ █ ░█▓▓█  ░██░▒██    ▒██ ▒██▄█▓▒ ▒▓▓█  ░██░  ▒   ██▒
-░░██▒██▓▒▒█████▓ ▒██▒   ░██▒▒██▒ ░  ░▒▒█████▓ ▒██████▒▒
-░ ▓░▒ ▒ ░▒▓▒ ▒ ▒ ░ ▒░   ░  ░▒▓▒░ ░  ░░▒▓▒ ▒ ▒ ▒ ▒▓▒ ▒ ░
-  ▒ ░ ░ ░░▒░ ░ ░ ░  ░      ░░▒ ░     ░░▒░ ░ ░ ░ ░▒  ░ ░
-  ░   ░  ░░░ ░ ░ ░      ░   ░░        ░░░ ░ ░ ░  ░  ░  
-    ░      ░            ░               ░           ░  
-";
-
         private static void Main() {
             Console.SetWindowSize(80, 50);
             DisplayLogo();
+
             try {
                 var game = new Game();
                 game.Run();
@@ -52,11 +19,11 @@ namespace HuntTheWumpus {
 
         private static void DisplayLogo() {
             Thread.Sleep(500);
-            Console.WriteLine(HuntAscii);
+            Console.WriteLine(Msg.HuntAscii);
             Thread.Sleep(500);
-            Console.WriteLine(TheAscii);
+            Console.WriteLine(Msg.TheAscii);
             Thread.Sleep(500);
-            Console.WriteLine(WumpusAscii);
+            Console.WriteLine(Msg.WumpusAscii);
         }
     }
 }
