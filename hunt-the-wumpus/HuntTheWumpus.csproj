@@ -43,19 +43,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BottomlessPit.cs" />
-    <Compile Include="DeadlyHazzard.cs" />
+    <Compile Include="GameEntities\BottomlessPit.cs" />
+    <Compile Include="GameEntities\DeadlyHazzard.cs" />
     <Compile Include="EndState.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameEntity.cs" />
-    <Compile Include="Hazzard.cs" />
+    <Compile Include="GameEntities\GameEntity.cs" />
+    <Compile Include="GameEntities\Hazzard.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Msg.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="GameEntities\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SuperBats.cs" />
-    <Compile Include="Wumpus.cs" />
+    <Compile Include="GameEntities\SuperBats.cs" />
+    <Compile Include="GameEntities\Wumpus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
