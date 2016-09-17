@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HuntTheWumpus.GameEntities;
 
 namespace HuntTheWumpus {
     public class Map {
         public const int NumOfRooms = 20;
         private static readonly Random Random = new Random();
-        private readonly int _playerInitalRoomNumber;
-        private readonly int _wumpusInitalRoomNumber;
-        private readonly List<Hazzard> _hazzards;
         private readonly List<DeadlyHazzard> _deadlyHazzards;
+        private readonly List<Hazzard> _hazzards;
+        private readonly int _playerInitalRoomNumber;
         private readonly HashSet<int> _roomsWithStaticHazards;
+        private readonly int _wumpusInitalRoomNumber;
         public Player Player { get; private set; }
         public Wumpus Wumpus { get; private set; }
 

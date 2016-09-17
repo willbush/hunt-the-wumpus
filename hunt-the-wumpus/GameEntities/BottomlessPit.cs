@@ -1,6 +1,6 @@
 using System;
 
-namespace HuntTheWumpus {
+namespace HuntTheWumpus.GameEntities {
     public class BottomlessPit : DeadlyHazzard {
         public override void PrintLocation() {
             Console.WriteLine($"Bottomless pit in room {RoomNumber}");

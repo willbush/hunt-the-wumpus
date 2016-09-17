@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HuntTheWumpus {
+namespace HuntTheWumpus.GameEntities {
     public class Player : GameEntity {
         private const int MaxNumberOfArrows = 5;
         public int MaxArrows { get; } = MaxNumberOfArrows;

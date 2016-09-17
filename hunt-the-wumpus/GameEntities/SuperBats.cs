@@ -1,6 +1,6 @@
 using System;
 
-namespace HuntTheWumpus {
+namespace HuntTheWumpus.GameEntities {
     public class SuperBats : Hazzard {
         public SuperBats(int roomNumber) {
             RoomNumber = roomNumber;

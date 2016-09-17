@@ -1,6 +1,6 @@
 using System;
 
-namespace HuntTheWumpus {
+namespace HuntTheWumpus.GameEntities {
     public class Wumpus : DeadlyHazzard {
         private readonly Map _map;
         private bool IsAwake { get; set; }

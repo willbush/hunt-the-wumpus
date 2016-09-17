@@ -5,8 +5,7 @@ namespace HuntTheWumpus {
         public bool IsGameOver { get; }
         public string GameOverMessage { get; }
 
-        internal EndState() {
-        }
+        internal EndState() {}
 
         internal EndState(bool isGameOver, string gameOverMessage) {
             IsGameOver = isGameOver;
