@@ -6,12 +6,13 @@ namespace HuntTheWumpus {
     ///     The entry point of the application. Game logo is displayed and the game is started.
     /// </summary>
     internal class Program {
-        private static void Main() {
+        private static void Main(string[] arguments) {
             Console.SetWindowSize(height: 50, width: 80);
             DisplayLogo();
 
             try {
-                var game = new Game();
+                bool isEnableCheatMode = arguments.Length > 0 && arguments[0] == "cheat";
+                var game = new Game(isEnableCheatMode);
                 game.Run();
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());

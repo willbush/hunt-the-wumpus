@@ -6,11 +6,16 @@ namespace HuntTheWumpus {
     ///     Game class has the main game loop and handles the flow of control for playing and reseting the game.
     /// </summary>
     public class Game {
+        private readonly bool _isCheatMode;
         private readonly ISet<string> _acceptableResponses = new HashSet<string> { "Y", "N" };
         private Map _map;
 
-        internal Game() {
+        internal Game(bool isCheatMode) {
+            _isCheatMode = isCheatMode;
             _map = new Map();
+
+            if (isCheatMode)
+                _map.PrintHazards();
         }
 
         /// <summary>
@@ -46,6 +51,9 @@ namespace HuntTheWumpus {
                 _map.Reset();
             else
                 _map = new Map();
+
+            if (_isCheatMode)
+                _map.PrintHazards();
         }
 
         private static string GetValidResponse(string question, ICollection<string> acceptableResponses) {

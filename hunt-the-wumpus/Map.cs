@@ -73,9 +73,6 @@ namespace HuntTheWumpus {
                 bottomlessPitRoom1,
                 bottomlessPitRoom2
             };
-
-            //TODO: remove lines below
-            _hazards.ForEach(h => h.PrintLocation());
         }
 
         /// <summary>
@@ -84,9 +81,6 @@ namespace HuntTheWumpus {
         public void Reset() {
             Player = new Player { RoomNumber = _playerInitialRoomNumber };
             Wumpus = new Wumpus(this, _wumpusInitialRoomNumber);
-
-            //TODO: remove lines below
-            _hazards.ForEach(h => h.PrintLocation());
         }
 
         /// <summary>
@@ -172,6 +166,11 @@ namespace HuntTheWumpus {
 
         public static bool IsAdjacent(int currentRoom, int adjacentRoom) {
             return Rooms[currentRoom].Contains(adjacentRoom);
+        }
+
+        public void PrintHazards() {
+            Console.WriteLine();
+            _hazards.ForEach(h => h.PrintLocation());
         }
     }
 }
