@@ -4,6 +4,14 @@ My implementation of the [hunt the wumpus](https://en.wikipedia.org/wiki/Hunt_th
 Compiling and Running
 ---------
 
+### Linux
+
+```bash
+sudo apt install mono-complete
+xbuild HuntTheWumpus.sln
+
+```
+
 ### Windows
 Insure you have [.NET Framework 4.6.1](https://www.microsoft.com/net/download)
 
@@ -22,4 +30,15 @@ Cheat Mode
 
 Cheat mode will display the locations of all the hazards when you start a game and will display the location of the Wumpus everytime it moves.
 
-To enable cheat mode pass the parameter "cheat" to the executable.
+To enable cheat mode pass the paramter "cheat" to the executable.
+For example, assuming you're in the same directory of the executable:
+
+for Windows:
+```shell
+HuntTheWumpus.exe cheat
+```
+
+for Linux:
+```bash
+./HuntTheWumpus cheat
+```
