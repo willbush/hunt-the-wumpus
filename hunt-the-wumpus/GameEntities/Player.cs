@@ -35,8 +35,8 @@ namespace HuntTheWumpus.GameEntities {
             int numOfRooms = GetNumRoomsToTraverse();
 
             if (numOfRooms > 0) {
-                endState = ShootArrow(GetRoomsToTraverse(numOfRooms), wumpusRoomNumber);
                 CrookedArrowCount = CrookedArrowCount - 1;
+                endState = ShootArrow(GetRoomsToTraverse(numOfRooms), wumpusRoomNumber);
             } else {
                 Console.WriteLine("OK, suit yourself...");
                 endState = new EndState();

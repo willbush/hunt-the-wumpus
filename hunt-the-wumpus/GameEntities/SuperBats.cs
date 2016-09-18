@@ -18,12 +18,11 @@ namespace HuntTheWumpus.GameEntities {
         ///     Moves player to a random location on the map if they enter the
         ///     same room as a super bat.
         /// </summary>
-        /// <param name="player">the player</param>
-        public override void Update(Player player) {
-            if (player.RoomNumber != RoomNumber) return;
+        public override void Update(Map map) {
+            if (map.Player.RoomNumber != RoomNumber) return;
 
             Console.WriteLine(Message.BatSnatch);
-            player.RoomNumber = Map.GetAnyRandomRoomNumber();
+            map.Player.RoomNumber = Map.GetAnyRandomRoomNumber();
         }
     }
 }

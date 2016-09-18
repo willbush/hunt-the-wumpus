@@ -10,7 +10,7 @@ namespace HuntTheWumpus.GameEntities {
             Console.WriteLine(Message.PitWarning);
         }
 
-        public override void Update(Player player) {}
+        public override void Update(Map map) {}
 
         public override EndState DetermineEndState(int playerRoomNumber) {
             return playerRoomNumber == RoomNumber

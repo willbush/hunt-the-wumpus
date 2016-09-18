@@ -11,8 +11,8 @@ namespace HuntTheWumpus {
             DisplayLogo();
 
             try {
-                bool isEnableCheatMode = arguments.Length > 0 && arguments[0] == "cheat";
-                var game = new Game(isEnableCheatMode);
+                bool isCheatMode = arguments.Length > 0 && arguments[0].ToLower() == "cheat";
+                var game = new Game(isCheatMode);
                 game.Run();
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());

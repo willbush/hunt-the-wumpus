@@ -6,7 +6,6 @@ namespace HuntTheWumpus.GameEntities {
         ///     Every hazard needs to be able to update some state
         ///     or print things out depending on the players position.
         /// </summary>
-        /// <param name="player"></param>
-        public abstract void Update(Player player);
+        public abstract void Update(Map map);
     }
 }

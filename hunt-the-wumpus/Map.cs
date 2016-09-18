@@ -13,6 +13,7 @@ namespace HuntTheWumpus {
         private readonly int _playerInitialRoomNumber;
         private readonly HashSet<int> _roomsWithStaticHazards;
         private readonly int _wumpusInitialRoomNumber;
+        public bool IsCheatMode { get; }
         public Player Player { get; private set; }
         public Wumpus Wumpus { get; private set; }
 
@@ -42,13 +43,14 @@ namespace HuntTheWumpus {
             { 20, new HashSet<int> { 13, 16, 19 } }
         };
 
-        public Map() {
+        public Map(bool isCheatMode) {
+            IsCheatMode = isCheatMode;
             var occupiedRooms = new HashSet<int>();
 
             _playerInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
             Player = new Player { RoomNumber = _playerInitialRoomNumber };
             _wumpusInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
-            Wumpus = new Wumpus(this, _wumpusInitialRoomNumber);
+            Wumpus = new Wumpus(_wumpusInitialRoomNumber);
 
             _hazards = new List<Hazard> { Wumpus };
             _deadlyHazards = new List<DeadlyHazard> { Wumpus };
@@ -73,6 +75,9 @@ namespace HuntTheWumpus {
                 bottomlessPitRoom1,
                 bottomlessPitRoom2
             };
+
+            if (IsCheatMode)
+                PrintHazards();
         }
 
         /// <summary>
@@ -80,7 +85,10 @@ namespace HuntTheWumpus {
         /// </summary>
         public void Reset() {
             Player = new Player { RoomNumber = _playerInitialRoomNumber };
-            Wumpus = new Wumpus(this, _wumpusInitialRoomNumber);
+            Wumpus = new Wumpus(_wumpusInitialRoomNumber);
+
+            if (IsCheatMode)
+                PrintHazards();
         }
 
         /// <summary>
@@ -109,7 +117,7 @@ namespace HuntTheWumpus {
             HashSet<int> roomsAdjacentToPlayer = Rooms[Player.RoomNumber];
             _hazards.ForEach(
                 h => {
-                    h.Update(Player);
+                    h.Update(this);
                     if (roomsAdjacentToPlayer.Contains(h.RoomNumber))
                         h.PrintHazardWarning();
                 });

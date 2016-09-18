@@ -2,11 +2,9 @@ using System;
 
 namespace HuntTheWumpus.GameEntities {
     public class Wumpus : DeadlyHazard {
-        private readonly Map _map;
         private bool IsAwake { get; set; }
 
-        public Wumpus(Map map, int roomNumber) {
-            _map = map;
+        public Wumpus(int roomNumber) {
             RoomNumber = roomNumber;
         }
 
@@ -14,26 +12,27 @@ namespace HuntTheWumpus.GameEntities {
         ///     Updates the state of the wumpus.
         /// </summary>
         /// <param name="player">the player</param>
-        public override void Update(Player player) {
-            if (!IsAwake && player.RoomNumber == RoomNumber) {
+        public override void Update(Map map) {
+            if (!IsAwake && map.Player.RoomNumber == RoomNumber) {
                 Console.WriteLine(Message.WumpusBump);
                 IsAwake = true;
             }
-            if (!IsAwake && player.CrookedArrowCount < player.MaxArrows)
+            if (!IsAwake && map.Player.CrookedArrowCount < map.Player.MaxArrows)
                 IsAwake = true;
 
             if (IsAwake)
-                Move();
+                Move(map);
         }
 
         /// <summary>
         ///     Moves the wumpus with a 75% chance.
         /// </summary>
-        public void Move() {
+        public void Move(Map map) {
             if (!WumpusFeelsLikeMoving()) return;
 
-            RoomNumber = _map.GetSafeRoomNextTo(RoomNumber);
-            Console.WriteLine($"Wumpus moved to {RoomNumber}");
+            RoomNumber = map.GetSafeRoomNextTo(RoomNumber);
+            if (map.IsCheatMode)
+                Console.WriteLine($"Wumpus moved to {RoomNumber}");
         }
 
         private static bool WumpusFeelsLikeMoving() {
