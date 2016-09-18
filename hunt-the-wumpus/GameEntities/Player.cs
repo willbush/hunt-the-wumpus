@@ -8,6 +8,10 @@ namespace HuntTheWumpus.GameEntities {
         public int MaxArrows { get; } = MaxNumberOfArrows;
         public int CrookedArrowCount { get; private set; } = MaxNumberOfArrows;
 
+        public Player(int roomNumber) {
+            RoomNumber = roomNumber;
+        }
+
         /// <summary>
         ///     Requests where the player wants to move to, validates the input, and moves the player.
         /// </summary>

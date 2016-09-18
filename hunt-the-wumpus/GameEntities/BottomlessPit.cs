@@ -2,6 +2,11 @@ using System;
 
 namespace HuntTheWumpus.GameEntities {
     public class BottomlessPit : DeadlyHazard {
+
+        public BottomlessPit(int roomNumber) {
+            RoomNumber = roomNumber;
+        }
+
         public override void PrintLocation() {
             Console.WriteLine($"Bottomless pit in room {RoomNumber}");
         }

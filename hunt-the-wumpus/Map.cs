@@ -48,32 +48,24 @@ namespace HuntTheWumpus {
             var occupiedRooms = new HashSet<int>();
 
             _playerInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
-            Player = new Player { RoomNumber = _playerInitialRoomNumber };
             _wumpusInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
+
+            Player = new Player(_playerInitialRoomNumber);
             Wumpus = new Wumpus(_wumpusInitialRoomNumber);
 
-            _hazards = new List<Hazard> { Wumpus };
-            _deadlyHazards = new List<DeadlyHazard> { Wumpus };
+            var bottomlessPit1 = new BottomlessPit(GetRandomAvailableRoom(occupiedRooms));
+            var bottomlessPit2 = new BottomlessPit(GetRandomAvailableRoom(occupiedRooms));
+            var superbats1 = new SuperBats(GetRandomAvailableRoom(occupiedRooms));
+            var superbats2 = new SuperBats(GetRandomAvailableRoom(occupiedRooms));
 
-            int superBatRoom1 = GetRandomAvailableRoom(occupiedRooms);
-            _hazards.Add(new SuperBats(superBatRoom1));
-
-            int superBatRoom2 = GetRandomAvailableRoom(occupiedRooms);
-            _hazards.Add(new SuperBats(superBatRoom2));
-
-            int bottomlessPitRoom1 = GetRandomAvailableRoom(occupiedRooms);
-            _hazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom1 });
-            _deadlyHazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom1 });
-
-            int bottomlessPitRoom2 = GetRandomAvailableRoom(occupiedRooms);
-            _hazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom2 });
-            _deadlyHazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom2 });
+            _hazards = new List<Hazard> { Wumpus, bottomlessPit1, bottomlessPit2, superbats1, superbats2 };
+            _deadlyHazards = new List<DeadlyHazard> { Wumpus, bottomlessPit1, bottomlessPit2 };
 
             _roomsWithStaticHazards = new HashSet<int> {
-                superBatRoom1,
-                superBatRoom2,
-                bottomlessPitRoom1,
-                bottomlessPitRoom2
+                superbats1.RoomNumber,
+                superbats2.RoomNumber,
+                bottomlessPit1.RoomNumber,
+                bottomlessPit2.RoomNumber
             };
 
             if (IsCheatMode)
@@ -84,7 +76,7 @@ namespace HuntTheWumpus {
         ///     Reset map state to its initial state.
         /// </summary>
         public void Reset() {
-            Player = new Player { RoomNumber = _playerInitialRoomNumber };
+            Player = new Player(_playerInitialRoomNumber);
             Wumpus = new Wumpus(_wumpusInitialRoomNumber);
 
             if (IsCheatMode)
