@@ -4,6 +4,14 @@ My implementation of the [hunt the wumpus](https://en.wikipedia.org/wiki/Hunt_th
 Compiling and Running
 ---------
 
+### Linux
+
+```bash
+sudo apt install mono-complete
+xbuild HuntTheWumpus.sln
+
+```
+
 ### Windows
 Insure you have [.NET Framework 4.6.1](https://www.microsoft.com/net/download)
 
@@ -30,7 +38,7 @@ for Windows:
 HuntTheWumpus.exe cheat
 ```
 
-for Linux/Unix:
+for Linux:
 ```bash
 ./HuntTheWumpus cheat
 ```
