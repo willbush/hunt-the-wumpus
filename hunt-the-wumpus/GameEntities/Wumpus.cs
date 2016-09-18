@@ -2,9 +2,11 @@ using System;
 
 namespace HuntTheWumpus.GameEntities {
     public class Wumpus : DeadlyHazard {
-        private bool IsAwake { get; set; }
+        private readonly int _initialRoomNumber;
+        public bool IsAwake { get; set; }
 
         public Wumpus(int roomNumber) {
+            _initialRoomNumber = roomNumber;
             RoomNumber = roomNumber;
         }
 
@@ -57,6 +59,14 @@ namespace HuntTheWumpus.GameEntities {
                 return new EndState(true, $"{Message.WumpusGotYou}\n{Message.LoseMessage}");
 
             return new EndState();
+        }
+
+        /// <summary>
+        ///     Resets Wumpus to initial state.
+        /// </summary>
+        public void Reset() {
+            RoomNumber = _initialRoomNumber;
+            IsAwake = false;
         }
     }
 }

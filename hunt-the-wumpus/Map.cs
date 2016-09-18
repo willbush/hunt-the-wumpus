@@ -10,12 +10,10 @@ namespace HuntTheWumpus {
         private static readonly Random Random = new Random();
         private readonly List<DeadlyHazard> _deadlyHazards;
         private readonly List<Hazard> _hazards;
-        private readonly int _playerInitialRoomNumber;
         private readonly HashSet<int> _roomsWithStaticHazards;
-        private readonly int _wumpusInitialRoomNumber;
         public bool IsCheatMode { get; }
-        public Player Player { get; private set; }
-        public Wumpus Wumpus { get; private set; }
+        public Player Player { get; }
+        public Wumpus Wumpus { get; }
 
         // Each key is the room number and its value is the set of adjacent rooms.
         // A dictionary of hash sets is definitely overkill given the constant number of elements, 
@@ -47,11 +45,8 @@ namespace HuntTheWumpus {
             IsCheatMode = isCheatMode;
             var occupiedRooms = new HashSet<int>();
 
-            _playerInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
-            _wumpusInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
-
-            Player = new Player(_playerInitialRoomNumber);
-            Wumpus = new Wumpus(_wumpusInitialRoomNumber);
+            Player = new Player(GetRandomAvailableRoom(occupiedRooms));
+            Wumpus = new Wumpus(GetRandomAvailableRoom(occupiedRooms));
 
             var bottomlessPit1 = new BottomlessPit(GetRandomAvailableRoom(occupiedRooms));
             var bottomlessPit2 = new BottomlessPit(GetRandomAvailableRoom(occupiedRooms));
@@ -76,8 +71,8 @@ namespace HuntTheWumpus {
         ///     Reset map state to its initial state.
         /// </summary>
         public void Reset() {
-            Player = new Player(_playerInitialRoomNumber);
-            Wumpus = new Wumpus(_wumpusInitialRoomNumber);
+            Player.Reset();
+            Wumpus.Reset();
 
             if (IsCheatMode)
                 PrintHazards();

@@ -5,10 +5,12 @@ using System.Linq;
 namespace HuntTheWumpus.GameEntities {
     public class Player : GameEntity {
         private const int MaxNumberOfArrows = 5;
+        private readonly int _initialRoomNum;
         public int MaxArrows { get; } = MaxNumberOfArrows;
-        public int CrookedArrowCount { get; private set; } = MaxNumberOfArrows;
+        public int CrookedArrowCount { get; set; } = MaxNumberOfArrows;
 
         public Player(int roomNumber) {
+            _initialRoomNum = roomNumber;
             RoomNumber = roomNumber;
         }
 
@@ -173,6 +175,14 @@ namespace HuntTheWumpus.GameEntities {
         public override void PrintLocation() {
             Console.WriteLine($"You are in room {RoomNumber}");
             Map.PrintAdjacentRoomNumbers(RoomNumber);
+        }
+
+        /// <summary>
+        ///     Resets player to initial state.
+        /// </summary>
+        public void Reset() {
+            RoomNumber = _initialRoomNum;
+            CrookedArrowCount = MaxArrows;
         }
     }
 }
