@@ -1,7 +1,7 @@
 using System;
 
 namespace HuntTheWumpus.GameEntities {
-    public class SuperBats : Hazzard {
+    public class SuperBats : Hazard {
         public SuperBats(int roomNumber) {
             RoomNumber = roomNumber;
         }
@@ -11,13 +11,18 @@ namespace HuntTheWumpus.GameEntities {
         }
 
         public override void PrintHazardWarning() {
-            Console.WriteLine(Msg.BatWarning);
+            Console.WriteLine(Message.BatWarning);
         }
 
+        /// <summary>
+        ///     Moves player to a random location on the map if they enter the
+        ///     same room as a super bat.
+        /// </summary>
+        /// <param name="player">the player</param>
         public override void Update(Player player) {
             if (player.RoomNumber != RoomNumber) return;
 
-            Console.WriteLine(Msg.BatSnatch);
+            Console.WriteLine(Message.BatSnatch);
             player.RoomNumber = Map.GetAnyRandomRoomNumber();
         }
     }

@@ -44,13 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameEntities\BottomlessPit.cs" />
-    <Compile Include="GameEntities\DeadlyHazzard.cs" />
+    <Compile Include="GameEntities\DeadlyHazard.cs" />
     <Compile Include="EndState.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameEntities\GameEntity.cs" />
-    <Compile Include="GameEntities\Hazzard.cs" />
+    <Compile Include="GameEntities\Hazard.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="Msg.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="GameEntities\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

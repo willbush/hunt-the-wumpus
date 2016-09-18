@@ -1,5 +1,5 @@
 ﻿namespace HuntTheWumpus {
-    public class Msg {
+    public class Message {
         public const string HuntAscii = @"
  ██░ ██  █    ██  ███▄    █ ▄▄▄█████▓                  
 ▓██░ ██▒ ██  ▓██▒ ██ ▀█   █ ▓  ██▒ ▓▒                  

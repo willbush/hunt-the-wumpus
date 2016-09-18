@@ -1,20 +1,20 @@
 using System;
 
 namespace HuntTheWumpus.GameEntities {
-    public class BottomlessPit : DeadlyHazzard {
+    public class BottomlessPit : DeadlyHazard {
         public override void PrintLocation() {
             Console.WriteLine($"Bottomless pit in room {RoomNumber}");
         }
 
         public override void PrintHazardWarning() {
-            Console.WriteLine(Msg.PitWarning);
+            Console.WriteLine(Message.PitWarning);
         }
 
         public override void Update(Player player) {}
 
-        public override EndState GetEndState(int playerRoomNumber) {
+        public override EndState DetermineEndState(int playerRoomNumber) {
             return playerRoomNumber == RoomNumber
-                ? new EndState(true, $"{Msg.FellInPit}\n{Msg.LoseMessage}")
+                ? new EndState(true, $"{Message.FellInPit}\n{Message.LoseMessage}")
                 : new EndState();
         }
     }

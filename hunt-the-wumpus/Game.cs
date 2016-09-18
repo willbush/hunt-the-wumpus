@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 namespace HuntTheWumpus {
+    /// <summary>
+    ///     Game class has the main game loop and handles the flow of control for playing and reseting the game.
+    /// </summary>
     public class Game {
         private readonly ISet<string> _acceptableResponses = new HashSet<string> { "Y", "N" };
         private Map _map;
@@ -10,22 +13,27 @@ namespace HuntTheWumpus {
             _map = new Map();
         }
 
+        /// <summary>
+        ///     Runs the game as long as the player wants,
+        ///     and if the player wants, will reset the game.
+        /// </summary>
         public void Run() {
             string playResponse;
             do {
                 Play();
-                playResponse = GetValidResponse(Msg.PlayPrompt, _acceptableResponses);
+                playResponse = GetValidResponse(Message.PlayPrompt, _acceptableResponses);
                 if (playResponse == "Y")
                     ResetMap();
             } while (playResponse == "Y");
         }
 
+        // Main game loop that runs until the game is over.
         private void Play() {
             EndState endState;
 
             do {
                 _map.Update();
-                string command = GetValidResponse(Msg.ActionPrompt, new HashSet<string> { "S", "M", "Q" });
+                string command = GetValidResponse(Message.ActionPrompt, new HashSet<string> { "S", "M", "Q" });
                 endState = _map.GetEndState(command);
             } while (!endState.IsGameOver);
 
@@ -33,19 +41,13 @@ namespace HuntTheWumpus {
         }
 
         private void ResetMap() {
-            string setupResponse = GetValidResponse(Msg.SetupPrompt, _acceptableResponses);
+            string setupResponse = GetValidResponse(Message.SetupPrompt, _acceptableResponses);
             if (setupResponse == "Y")
                 _map.Reset();
             else
                 _map = new Map();
         }
 
-        /// <summary>
-        ///     Gets an acceptable response to a question.
-        /// </summary>
-        /// <param name="question">The question to ask</param>
-        /// <param name="acceptableResponses">acceptable responses to the question (all assumed to be uppercase)</param>
-        /// <returns>an acceptable response</returns>
         private static string GetValidResponse(string question, ICollection<string> acceptableResponses) {
             string response;
             do {

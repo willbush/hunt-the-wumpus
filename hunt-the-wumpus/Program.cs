@@ -2,9 +2,12 @@
 using System.Threading;
 
 namespace HuntTheWumpus {
+    /// <summary>
+    ///     The entry point of the application. Game logo is displayed and the game is started.
+    /// </summary>
     internal class Program {
         private static void Main() {
-            Console.SetWindowSize(80, 50);
+            Console.SetWindowSize(height: 50, width: 80);
             DisplayLogo();
 
             try {
@@ -19,11 +22,11 @@ namespace HuntTheWumpus {
 
         private static void DisplayLogo() {
             Thread.Sleep(500);
-            Console.WriteLine(Msg.HuntAscii);
+            Console.WriteLine(Message.HuntAscii);
             Thread.Sleep(500);
-            Console.WriteLine(Msg.TheAscii);
+            Console.WriteLine(Message.TheAscii);
             Thread.Sleep(500);
-            Console.WriteLine(Msg.WumpusAscii);
+            Console.WriteLine(Message.WumpusAscii);
         }
     }
 }

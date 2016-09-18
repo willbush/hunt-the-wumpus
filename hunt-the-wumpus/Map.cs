@@ -8,15 +8,17 @@ namespace HuntTheWumpus {
     public class Map {
         public const int NumOfRooms = 20;
         private static readonly Random Random = new Random();
-        private readonly List<DeadlyHazzard> _deadlyHazzards;
-        private readonly List<Hazzard> _hazzards;
-        private readonly int _playerInitalRoomNumber;
+        private readonly List<DeadlyHazard> _deadlyHazards;
+        private readonly List<Hazard> _hazards;
+        private readonly int _playerInitialRoomNumber;
         private readonly HashSet<int> _roomsWithStaticHazards;
-        private readonly int _wumpusInitalRoomNumber;
+        private readonly int _wumpusInitialRoomNumber;
         public Player Player { get; private set; }
         public Wumpus Wumpus { get; private set; }
 
         // Each key is the room number and its value is the set of adjacent rooms.
+        // A dictionary of hash sets is definitely overkill given the constant number of elements, 
+        // but with it comes a lot of Linq expression convenience. 
         internal static Dictionary<int, HashSet<int>> Rooms { get; } = new Dictionary<int, HashSet<int>> {
             { 1, new HashSet<int> { 2, 5, 8 } },
             { 2, new HashSet<int> { 1, 3, 10 } },
@@ -43,27 +45,27 @@ namespace HuntTheWumpus {
         public Map() {
             var occupiedRooms = new HashSet<int>();
 
-            _playerInitalRoomNumber = GetRandomAvailableRoom(occupiedRooms);
-            Player = new Player { RoomNumber = _playerInitalRoomNumber };
-            _wumpusInitalRoomNumber = GetRandomAvailableRoom(occupiedRooms);
-            Wumpus = new Wumpus(this, _wumpusInitalRoomNumber);
+            _playerInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
+            Player = new Player { RoomNumber = _playerInitialRoomNumber };
+            _wumpusInitialRoomNumber = GetRandomAvailableRoom(occupiedRooms);
+            Wumpus = new Wumpus(this, _wumpusInitialRoomNumber);
 
-            _hazzards = new List<Hazzard> { Wumpus };
-            _deadlyHazzards = new List<DeadlyHazzard> { Wumpus };
+            _hazards = new List<Hazard> { Wumpus };
+            _deadlyHazards = new List<DeadlyHazard> { Wumpus };
 
             int superBatRoom1 = GetRandomAvailableRoom(occupiedRooms);
-            _hazzards.Add(new SuperBats(superBatRoom1));
+            _hazards.Add(new SuperBats(superBatRoom1));
 
             int superBatRoom2 = GetRandomAvailableRoom(occupiedRooms);
-            _hazzards.Add(new SuperBats(superBatRoom2));
+            _hazards.Add(new SuperBats(superBatRoom2));
 
             int bottomlessPitRoom1 = GetRandomAvailableRoom(occupiedRooms);
-            _hazzards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom1 });
-            _deadlyHazzards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom1 });
+            _hazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom1 });
+            _deadlyHazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom1 });
 
             int bottomlessPitRoom2 = GetRandomAvailableRoom(occupiedRooms);
-            _hazzards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom2 });
-            _deadlyHazzards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom2 });
+            _hazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom2 });
+            _deadlyHazards.Add(new BottomlessPit { RoomNumber = bottomlessPitRoom2 });
 
             _roomsWithStaticHazards = new HashSet<int> {
                 superBatRoom1,
@@ -73,17 +75,23 @@ namespace HuntTheWumpus {
             };
 
             //TODO: remove lines below
-            _hazzards.ForEach(h => h.PrintLocation());
+            _hazards.ForEach(h => h.PrintLocation());
         }
 
+        /// <summary>
+        ///     Reset map state to its initial state.
+        /// </summary>
         public void Reset() {
-            Player = new Player { RoomNumber = _playerInitalRoomNumber };
-            Wumpus = new Wumpus(this, _wumpusInitalRoomNumber);
+            Player = new Player { RoomNumber = _playerInitialRoomNumber };
+            Wumpus = new Wumpus(this, _wumpusInitialRoomNumber);
 
             //TODO: remove lines below
-            _hazzards.ForEach(h => h.PrintLocation());
+            _hazards.ForEach(h => h.PrintLocation());
         }
 
+        /// <summary>
+        ///     Gets a random available room that's not a member of the give4n occupied rooms set.
+        /// </summary>
         public int GetRandomAvailableRoom(HashSet<int> occupiedRooms) {
             int[] availableRooms = Enumerable.Range(1, NumOfRooms).Where(r => !occupiedRooms.Contains(r)).ToArray();
             if (availableRooms.Length == 0)
@@ -96,13 +104,16 @@ namespace HuntTheWumpus {
         }
 
         public static int GetAnyRandomRoomNumber() {
-            return Random.Next(1, NumOfRooms + 1); // random number in range [1, 20]
+            return Random.Next(1, NumOfRooms + 1); // Random number in range [1, 20]
         }
 
+        /// <summary>
+        ///     Updates the state of the game on the map.
+        /// </summary>
         public void Update() {
             Console.WriteLine();
             HashSet<int> roomsAdjacentToPlayer = Rooms[Player.RoomNumber];
-            _hazzards.ForEach(
+            _hazards.ForEach(
                 h => {
                     h.Update(Player);
                     if (roomsAdjacentToPlayer.Contains(h.RoomNumber))
@@ -111,17 +122,25 @@ namespace HuntTheWumpus {
             Player.PrintLocation();
         }
 
+        /// <summary>
+        ///     Gets a room number that is adjacent to the given number that's contains no hazards.
+        /// </summary>
         public int GetSafeRoomNextTo(int roomNumber) {
             int[] safeAdjacentRooms = Rooms[roomNumber].Except(_roomsWithStaticHazards).ToArray();
             return safeAdjacentRooms.ElementAt(new Random().Next(safeAdjacentRooms.Length));
         }
 
+        /// <summary>
+        ///     Performs given command and returns the game end state depending on the results.
+        /// </summary>
+        /// <param name="command">player's input command</param>
+        /// <returns>game end state</returns>
         public EndState GetEndState(string command) {
             EndState endState;
             switch (command) {
                 case "M":
                     Player.Move();
-                    endState = GetEndState();
+                    endState = CheckPlayerMovement();
                     break;
                 case "S":
                     endState = Player.ShootArrow(Wumpus.RoomNumber);
@@ -136,9 +155,10 @@ namespace HuntTheWumpus {
             return endState;
         }
 
-        private EndState GetEndState() {
-            EndState endState =
-                _deadlyHazzards.Select(h => h.GetEndState(Player.RoomNumber)).FirstOrDefault(s => s.IsGameOver);
+        private EndState CheckPlayerMovement() {
+            EndState endState = _deadlyHazards
+                .Select(h => h.DetermineEndState(Player.RoomNumber))
+                .FirstOrDefault(s => s.IsGameOver);
             return endState ?? new EndState();
         }
 
