@@ -8,7 +8,7 @@ namespace HuntTheWumpus {
     /// </summary>
     public class EndState {
         public bool IsGameOver { get; }
-        public string GameOverMessage { get; }
+        private string GameOverMessage { get; }
 
         internal EndState() {}
 

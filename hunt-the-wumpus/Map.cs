@@ -13,7 +13,7 @@ namespace HuntTheWumpus {
         private readonly HashSet<int> _roomsWithStaticHazards;
         public bool IsCheatMode { get; }
         public Player Player { get; }
-        public Wumpus Wumpus { get; }
+        private Wumpus Wumpus { get; }
 
         // Each key is the room number and its value is the set of adjacent rooms.
         // A dictionary of hash sets is definitely overkill given the constant number of elements, 

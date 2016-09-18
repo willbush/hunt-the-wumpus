@@ -3,7 +3,7 @@ using System;
 namespace HuntTheWumpus.GameEntities {
     public class Wumpus : DeadlyHazard {
         private readonly int _initialRoomNumber;
-        public bool IsAwake { get; set; }
+        private bool IsAwake { get; set; }
 
         public Wumpus(int roomNumber) {
             _initialRoomNumber = roomNumber;
@@ -13,7 +13,6 @@ namespace HuntTheWumpus.GameEntities {
         /// <summary>
         ///     Updates the state of the wumpus.
         /// </summary>
-        /// <param name="player">the player</param>
         public override void Update(Map map) {
             if (!IsAwake && map.Player.RoomNumber == RoomNumber) {
                 Console.WriteLine(Message.WumpusBump);

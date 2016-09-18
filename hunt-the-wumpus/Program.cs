@@ -5,7 +5,7 @@ namespace HuntTheWumpus {
     /// <summary>
     ///     The entry point of the application. Game logo is displayed and the game is started.
     /// </summary>
-    internal class Program {
+    internal static class Program {
         private static void Main(string[] arguments) {
             Console.SetWindowSize(height: 50, width: 80);
             DisplayLogo();

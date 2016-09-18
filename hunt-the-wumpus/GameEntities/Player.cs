@@ -7,7 +7,7 @@ namespace HuntTheWumpus.GameEntities {
         private const int MaxNumberOfArrows = 5;
         private readonly int _initialRoomNum;
         public int MaxArrows { get; } = MaxNumberOfArrows;
-        public int CrookedArrowCount { get; set; } = MaxNumberOfArrows;
+        public int CrookedArrowCount { get; private set; } = MaxNumberOfArrows;
 
         public Player(int roomNumber) {
             _initialRoomNum = roomNumber;
