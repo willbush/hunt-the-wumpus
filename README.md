@@ -22,15 +22,4 @@ Cheat Mode
 
 Cheat mode will display the locations of all the hazards when you start a game and will display the location of the Wumpus everytime it moves.
 
-To enable cheat mode pass the paramter "cheat" to the executable.
-For example, assuming you're in the same directory of the executable:
-
-for Windows:
-```shell
-HuntTheWumpus.exe cheat
-```
-
-for Linux/Unix:
-```bash
-./HuntTheWumpus cheat
-```
+To enable cheat mode pass the parameter "cheat" to the executable.
