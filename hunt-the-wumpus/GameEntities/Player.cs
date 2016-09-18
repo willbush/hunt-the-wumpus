@@ -25,7 +25,7 @@ namespace HuntTheWumpus.GameEntities {
             int numOfRooms = GetNumRoomsToTraverse();
 
             if (numOfRooms > 0) {
-                endState = GetEndState(GetRoomsToTraverse(numOfRooms), wumpusRoomNumber);
+                endState = ShootArrow(GetRoomsToTraverse(numOfRooms), wumpusRoomNumber);
                 CrookedArrowCount = CrookedArrowCount - 1;
             } else {
                 Console.WriteLine("OK, suit yourself...");
@@ -34,52 +34,71 @@ namespace HuntTheWumpus.GameEntities {
             return endState;
         }
 
-        private EndState GetEndState(IReadOnlyCollection<int> roomsToTraverse, int wumpusRoomNum) {
-            if (roomsToTraverse == null)
-                return new EndState();
+        private EndState ShootArrow(IReadOnlyCollection<int> roomsToTraverse, int wumpusRoomNum) {
+            EndState endstate = Traverse(roomsToTraverse).Select(r => HitTarget(r, wumpusRoomNum))
+                .FirstOrDefault(e => e.IsGameOver);
 
-            int roomsTraversed = 0;
-            var traversedRooms = new List<int> { RoomNumber };
+            if (endstate != null) return endstate;
+
+            Console.WriteLine(Msg.Missed);
+            return CrookedArrowCount == 0
+                ? new EndState(true, $"{Msg.OutOfArrows}\n{Msg.LoseMessage}")
+                : new EndState();
+        }
+
+        private EndState HitTarget(int currentRoom, int wumpusRoomNum) {
+            Console.WriteLine(currentRoom);
+            EndState endState;
+            if (RoomNumber == currentRoom) {
+                endState = new EndState(true, $"{Msg.ArrowGotYou}\n{Msg.LoseMessage}");
+            } else if (wumpusRoomNum == currentRoom) {
+                endState = new EndState(true, Msg.WinMessage);
+            } else {
+                endState = new EndState();
+            }
+            return endState;
+        }
+
+        private IEnumerable<int> Traverse(IReadOnlyCollection<int> roomsToTraverse) {
             int currentRoom = RoomNumber;
 
-            foreach (int nextRoom in roomsToTraverse) {
-                HashSet<int> adjacentRooms = Map.Rooms[currentRoom];
-
-                if (adjacentRooms.Contains(nextRoom)) {
-                    traversedRooms.Add(currentRoom);
+            ICollection<int> traversedRooms = roomsToTraverse.TakeWhile(
+                nextRoom => {
+                    HashSet<int> adjacentRooms = Map.Rooms[currentRoom];
+                    if (!adjacentRooms.Contains(nextRoom)) return false;
                     currentRoom = nextRoom;
-                    Console.WriteLine(currentRoom);
-                    roomsTraversed++;
-                    if (RoomNumber == currentRoom) {
-                        return new EndState(true, $"Ouch! Arrow got you!\n{Msg.LoseMessage}");
-                    }
-                    if (wumpusRoomNum == currentRoom) {
-                        return new EndState(true, Msg.WinMessage);
-                    }
-                } else {
-                    break;
-                }
+                    return true;
+                }).ToList();
+
+            int numLeftToTraverse = roomsToTraverse.Count - traversedRooms.Count;
+            RandomlyTraverse(traversedRooms, currentRoom, numLeftToTraverse);
+            return traversedRooms;
+        }
+
+        private static void RandomlyTraverse(
+            ICollection<int> traversedRooms,
+            int currentRoom,
+            int numberToTraverse) {
+            int previousRoom;
+
+            if (!traversedRooms.Any()) {
+                HashSet<int> rooms = Map.Rooms[currentRoom];
+                int firstRoom = rooms.ElementAt(new Random().Next(rooms.Count));
+
+                previousRoom = currentRoom;
+                currentRoom = firstRoom;
+            } else {
+                previousRoom = currentRoom;
             }
-            while (roomsTraversed < roomsToTraverse.Count) {
-                int[] rooms = Map.Rooms[currentRoom].Where(r => r != traversedRooms.Last()).ToArray();
+
+            for (int traversed = 0; traversed < numberToTraverse; ++traversed) {
+                int[] rooms = Map.Rooms[currentRoom].Where(r => r != previousRoom).ToArray();
                 int nextRoom = rooms.ElementAt(new Random().Next(rooms.Length));
 
                 traversedRooms.Add(currentRoom);
+                previousRoom = currentRoom;
                 currentRoom = nextRoom;
-                Console.WriteLine(currentRoom);
-                roomsTraversed++;
-                if (RoomNumber == currentRoom) {
-                    return new EndState(true, $"Ouch! Arrow got you!\n{Msg.LoseMessage}");
-                }
-                if (wumpusRoomNum == currentRoom) {
-                    return new EndState(true, Msg.WinMessage);
-                }
             }
-            Console.WriteLine("Missed!");
-            if (CrookedArrowCount == 0) {
-                return new EndState(true, $"You've run out of arrows!\n{Msg.LoseMessage}");
-            }
-            return new EndState();
         }
 
         private static int GetNumRoomsToTraverse() {
@@ -89,7 +108,7 @@ namespace HuntTheWumpus.GameEntities {
             string response;
 
             do {
-                Console.Write(Msg.RoomNumPrompt);
+                Console.Write(Msg.NumOfRoomsToShootPrompt);
                 response = Console.ReadLine();
             } while (!int.TryParse(response, out numOfRooms) || numOfRooms < lowerBound || numOfRooms > upperBound);
 
@@ -108,7 +127,7 @@ namespace HuntTheWumpus.GameEntities {
                     continue;
                 }
                 if (IsTooCrooked(roomNumber, rooms)) {
-                    Console.WriteLine("Arrows aren't that crooked - try another room!");
+                    Console.WriteLine(Msg.TooCrooked);
                 } else {
                     rooms.Add(roomNumber);
                     count = count + 1;

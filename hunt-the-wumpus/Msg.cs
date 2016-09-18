@@ -46,6 +46,11 @@
         public const string BatSnatch = "Zap--Super Bat snatch! Elsewhereville for you!";
         public const string WumpusBump = "...Oops! Bumped a wumpus!";
 
+        public const string OutOfArrows = "You've run out of arrows!";
+        public const string ArrowGotYou = "Ouch! Arrow got you!";
+        public const string Missed = "Missed!";
+        public const string TooCrooked = "Arrows aren't that crooked - try another room!";
+
         public const string FellInPit = "YYYIIIIEEEE... fell in a pit!";
         public const string WumpusGotYou = "Tsk tsk tsk - wumpus got you!";
         public const string LoseMessage = "Ha ha ha - you lose!";
