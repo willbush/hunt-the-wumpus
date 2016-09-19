@@ -28,7 +28,7 @@ namespace HuntTheWumpus.GameEntities {
         /// <summary>
         ///     Moves the wumpus with a 75% chance.
         /// </summary>
-        public void Move(Map map) {
+        private void Move(Map map) {
             if (!WumpusFeelsLikeMoving()) return;
 
             RoomNumber = map.GetSafeRoomNextTo(RoomNumber);

@@ -25,7 +25,7 @@ namespace HuntTheWumpus {
                 Play();
                 playResponse = GetValidResponse(Message.PlayPrompt, _acceptableResponses);
                 if (playResponse == "Y")
-                    ResetMap();
+                    RequestResetMap();
             } while (playResponse == "Y");
         }
 
@@ -42,9 +42,9 @@ namespace HuntTheWumpus {
             endState.Print();
         }
 
-        private void ResetMap() {
-            string setupResponse = GetValidResponse(Message.SetupPrompt, _acceptableResponses);
-            if (setupResponse == "Y")
+        private void RequestResetMap() {
+            string resetResponse = GetValidResponse(Message.SetupPrompt, _acceptableResponses);
+            if (resetResponse == "Y")
                 _map.Reset();
             else
                 _map = new Map(_isCheatMode);

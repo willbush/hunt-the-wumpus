@@ -81,7 +81,7 @@ namespace HuntTheWumpus {
         /// <summary>
         ///     Gets a random available room that's not a member of the give4n occupied rooms set.
         /// </summary>
-        public int GetRandomAvailableRoom(HashSet<int> occupiedRooms) {
+        private static int GetRandomAvailableRoom(ISet<int> occupiedRooms) {
             int[] availableRooms = Enumerable.Range(1, NumOfRooms).Where(r => !occupiedRooms.Contains(r)).ToArray();
             if (availableRooms.Length == 0)
                 throw new InvalidOperationException("All rooms are already occupied.");
@@ -163,7 +163,7 @@ namespace HuntTheWumpus {
             return Rooms[currentRoom].Contains(adjacentRoom);
         }
 
-        public void PrintHazards() {
+        private void PrintHazards() {
             Console.WriteLine();
             _hazards.ForEach(h => h.PrintLocation());
         }
