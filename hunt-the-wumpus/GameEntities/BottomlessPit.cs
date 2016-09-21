@@ -2,10 +2,7 @@ using System;
 
 namespace HuntTheWumpus.GameEntities {
     public class BottomlessPit : DeadlyHazard {
-
-        public BottomlessPit(int roomNumber) {
-            RoomNumber = roomNumber;
-        }
+        public BottomlessPit(int roomNumber) : base(roomNumber) {}
 
         public override void PrintLocation() {
             Console.WriteLine($"Bottomless pit in room {RoomNumber}");
@@ -14,8 +11,6 @@ namespace HuntTheWumpus.GameEntities {
         public override void PrintHazardWarning() {
             Console.WriteLine(Message.PitWarning);
         }
-
-        public override void Update(Map map) {}
 
         public override EndState DetermineEndState(int playerRoomNumber) {
             return playerRoomNumber == RoomNumber

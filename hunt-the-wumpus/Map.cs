@@ -7,10 +7,10 @@ using HuntTheWumpus.GameEntities;
 namespace HuntTheWumpus {
     public class Map {
         public const int NumOfRooms = 20;
-        private static readonly Random Random = new Random();
         private readonly List<DeadlyHazard> _deadlyHazards;
         private readonly List<Hazard> _hazards;
         private readonly HashSet<int> _roomsWithStaticHazards;
+        private readonly List<SuperBats> _superBats;
         public bool IsCheatMode { get; }
         public Player Player { get; }
         private Wumpus Wumpus { get; }
@@ -55,6 +55,7 @@ namespace HuntTheWumpus {
 
             _hazards = new List<Hazard> { Wumpus, bottomlessPit1, bottomlessPit2, superbats1, superbats2 };
             _deadlyHazards = new List<DeadlyHazard> { Wumpus, bottomlessPit1, bottomlessPit2 };
+            _superBats = new List<SuperBats> { superbats1, superbats2 };
 
             _roomsWithStaticHazards = new HashSet<int> {
                 superbats1.RoomNumber,
@@ -86,14 +87,14 @@ namespace HuntTheWumpus {
             if (availableRooms.Length == 0)
                 throw new InvalidOperationException("All rooms are already occupied.");
 
-            int index = Random.Next(0, availableRooms.Length);
+            int index = new Random().Next(0, availableRooms.Length);
             int unoccupiedRoom = availableRooms[index];
             occupiedRooms.Add(unoccupiedRoom);
             return unoccupiedRoom;
         }
 
         public static int GetAnyRandomRoomNumber() {
-            return Random.Next(1, NumOfRooms + 1); // Random number in range [1, 20]
+            return new Random().Next(1, NumOfRooms + 1); // Random number in range [1, 20]
         }
 
         /// <summary>
@@ -101,10 +102,11 @@ namespace HuntTheWumpus {
         /// </summary>
         public void Update() {
             Console.WriteLine();
+            Wumpus.Update(this);
+
             HashSet<int> roomsAdjacentToPlayer = Rooms[Player.RoomNumber];
             _hazards.ForEach(
                 h => {
-                    h.Update(this);
                     if (roomsAdjacentToPlayer.Contains(h.RoomNumber))
                         h.PrintHazardWarning();
                 });
@@ -144,11 +146,17 @@ namespace HuntTheWumpus {
             return endState;
         }
 
+        // Game is over if the player moves into a deadly room.
+        // If the game's not over but the power got snatched, then loop and check again until the player
+        // doesn't get snatched or gets killed.
         private EndState CheckPlayerMovement() {
-            EndState endState = _deadlyHazards
-                .Select(h => h.DetermineEndState(Player.RoomNumber))
-                .FirstOrDefault(s => s.IsGameOver);
-            return endState ?? new EndState();
+            EndState endState;
+            do {
+                endState = _deadlyHazards
+                    .Select(h => h.DetermineEndState(Player.RoomNumber))
+                    .FirstOrDefault(s => s.IsGameOver) ?? new EndState();
+            } while (!endState.IsGameOver && _superBats.Any(b => b.TrySnatch(Player)));
+            return endState;
         }
 
         public static void PrintAdjacentRoomNumbers(int roomNum) {

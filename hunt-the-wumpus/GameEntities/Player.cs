@@ -9,9 +9,8 @@ namespace HuntTheWumpus.GameEntities {
         public int MaxArrows { get; } = MaxNumberOfArrows;
         public int CrookedArrowCount { get; private set; } = MaxNumberOfArrows;
 
-        public Player(int roomNumber) {
+        public Player(int roomNumber) : base(roomNumber) {
             _initialRoomNum = roomNumber;
-            RoomNumber = roomNumber;
         }
 
         /// <summary>
@@ -27,6 +26,10 @@ namespace HuntTheWumpus.GameEntities {
                 response = Console.ReadLine();
             }
             RoomNumber = adjacentRoom;
+        }
+
+        internal void Move(int roomNumber) {
+            RoomNumber = roomNumber;
         }
 
         /// <summary>

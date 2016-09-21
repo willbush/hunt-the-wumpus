@@ -5,15 +5,14 @@ namespace HuntTheWumpus.GameEntities {
         private readonly int _initialRoomNumber;
         private bool IsAwake { get; set; }
 
-        public Wumpus(int roomNumber) {
+        public Wumpus(int roomNumber) : base(roomNumber) {
             _initialRoomNumber = roomNumber;
-            RoomNumber = roomNumber;
         }
 
         /// <summary>
         ///     Updates the state of the wumpus.
         /// </summary>
-        public override void Update(Map map) {
+        public void Update(Map map) {
             if (!IsAwake && map.Player.RoomNumber == RoomNumber) {
                 Console.WriteLine(Message.WumpusBump);
                 IsAwake = true;
