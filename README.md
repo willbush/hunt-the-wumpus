@@ -1,5 +1,8 @@
 # hunt-the-wumpus
-My implementation of the [hunt the wumpus](https://en.wikipedia.org/wiki/Hunt_the_Wumpus) text based game
+
+An implementation of the [hunt the wumpus](https://en.wikipedia.org/wiki/Hunt_the_Wumpus) text based game in C#.
+
+After having implemented this in Haskell, I realized the object oriented nature of this project was made it overly complicated. See [hwump](https://github.com/willbush/hwump), which is my Haskell implementation in a fraction of the amount of code.
 
 Compiling and Running
 ---------
@@ -28,6 +31,6 @@ The executable should be located under: `hunt-the-wumpus\bin\Debug\HuntTheWumpus
 Cheat Mode
 ---------
 
-Cheat mode will display the locations of all the hazards when you start a game and will display the location of the Wumpus everytime it moves.
+Cheat mode will display the locations of all the hazards when you start a game and will display the location of the Wumpus every-time it moves.
 
 To enable cheat mode pass the parameter "cheat" to the executable.
